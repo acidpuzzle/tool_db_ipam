@@ -78,6 +78,9 @@ class Network(ipam_base):
     ip_address = relationship("IPAddres", back_populates="network")
     parent_network = relationship("Network", backref="subnets", remote_side=[id])
     vlan = relationship("VLAN", back_populates="network")
+    network_type = relationship(
+        "NetworkType", secondary=relate_network_network_type, back_populates="networks"
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -87,6 +90,9 @@ class Network(ipam_base):
 
     def __str__(self):
         return f"Network(network={self.network})"
+
+    def all_host(self):
+        return [str(host) for host in ip_network(self.network).hosts()]
 
 
 class VLAN(ipam_base):
@@ -117,6 +123,10 @@ class VRF(ipam_base):
     rd = Column(String(255))                                            # VARCHAR NULL,
     created = Column(DateTime, default=datetime.now(), nullable=False)  # TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated = Column(DateTime)                                          # TIMESTAMP NULL
+
+    device = relationship(
+        "Device", secondary=relate_vrf_to_device, back_populates="vrf"
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -158,6 +168,10 @@ class NetworkType(ipam_base):
     created = Column(DateTime, default=datetime.now(), nullable=False)  # TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated = Column(DateTime)                                          # TIMESTAMP NULL
 
+    networks = relationship(
+        "Network", secondary=relate_network_network_type, back_populates="network_type"
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -179,6 +193,9 @@ class Device(ipam_base):
 
     ip_address = relationship("IPAddres", back_populates="device")
     cred = relationship("Cred", back_populates="devices")
+    vrf = relationship(
+        "VRF", secondary=relate_vrf_to_device, back_populates="device"
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -215,7 +232,8 @@ class Cred(ipam_base):
 
 
 if __name__ == "__main__":
-    nets = ipam_db_session.query(Network).all()
-    print([net for net in nets])
+    nets = ipam_db_session.query(Network).filter(NetworkType.network_type == "mgmt").all()
+
     for net in nets:
-        print(net)
+        print(net.all_host())
+

@@ -395,15 +395,6 @@ INSERT INTO "network_type" ("network_type", "description")
 VALUES ('voice', 'IP phone network');
 
 INSERT INTO "network" ("network", description)
-VALUES ('10.0.0.0/8', 'Default public network');
-
-INSERT INTO "network" ("network", description)
-VALUES ('172.16.0.0/12', 'Default public network');
-
-INSERT INTO "network" ("network", description)
-VALUES ('192.168.0.0/16', 'Default public network');
-
-INSERT INTO "network" ("network", description)
 VALUES ('10.9.116.0/24', 'oko mgmt network');
 
 INSERT INTO "network" ("network", description)
