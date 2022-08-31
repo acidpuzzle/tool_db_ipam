@@ -186,6 +186,7 @@ class Device(ipam_base):
     __tablename__ = "device"
     id = Column(Integer, primary_key=True, nullable=False)              # SERIAL PRIMARY KEY,
     name = Column(String(255))                                          # VARCHAR NOT NULL,
+    mgmt_ip = Column(INET, nullable=False)                              # INET NOT NULL,
     cred_id = Column(Integer, ForeignKey('cred.id'))                    # INTEGER NOT NULL,
     description = Column(String(255))                                   # VARCHAR NULL,
     created = Column(DateTime, default=datetime.now(), nullable=False)  # TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,

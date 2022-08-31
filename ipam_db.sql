@@ -88,6 +88,7 @@ CREATE TABLE "relate_network_network_type"(
 CREATE TABLE "device"(
     "id" SERIAL PRIMARY KEY,
     "name" VARCHAR(255) NOT NULL,
+    "mgmt_ip" INET NOT NULL,
     "description" VARCHAR(255) NULL,
     "cred_id" INTEGER DEFAULT 1,
     "created" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
